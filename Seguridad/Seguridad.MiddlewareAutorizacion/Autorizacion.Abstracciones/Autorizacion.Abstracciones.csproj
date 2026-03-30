@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Version>1.0.1</Version>
-    <PackageId>Autorizacion.Abstracciones.jagllo</PackageId>
+    <PackageId>Autorizacion.Abstracciones.jgallo50367</PackageId>
     <Authors>Jgallocode</Authors>
     <Description>Interfaces y modelos compartidos del paquete de autorización por claims para ASP.NET Core 8</Description>
     <RepositoryUrl>https://github.com/SC701</RepositoryUrl>
