@@ -1,0 +1,105 @@
+﻿@page
+@model Web.Pages.Productos.EditarModel
+@{
+}
+<h2>Editar Producto</h2>
+<header class="subhead">
+    <div class="container">
+        <div class="masthead-subheading">SC-701: Programación Web Avanzada</div>
+        <div class="masthead-heading text-uppercase">Practica en clase: Productos</div>
+    </div>
+</header>
+
+
+<section class="page-section bg-light" id="principal">
+    <div class="container">
+        <div class="text-center">
+            <h2 class="section-heading text-uppercase">Editar producto</h2>
+            <h3 class="section-subheading text-muted">Lorem ipsum dolor sit amet consectetur.</h3>
+        </div>
+
+        <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto ">
+            <form method="post">
+                <div class="form-group">
+                    <label for="categoria">Categoria</label>
+                    <select asp-for="categoriaSeleccionada" class="form-select" asp-items="Model.categorias" id="categorias" onchange="fetchModelos()">
+                        <option value="">Seleccione una marca</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="subCategorias">Subcategorias</label>
+                    <select asp-for="subCategoriaSeleccionado" class="form-select" asp-items="Model.subCategorias" id="subCategorias">
+                        <option value="">Seleccione una Subcategoria</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="control-label" asp-for="productoResponse.Nombre"></label>
+                    <input class="form-control" asp-for="productoResponse.Nombre" />
+                    <span class="text-danger" asp-validation-for="productoResponse.Nombre"></span>
+                </div>
+                <div class="form-group">
+                    <label class="control-label" asp-for="productoResponse.Descripcion"></label>
+                    <input class="form-control" asp-for="productoResponse.Descripcion" />
+                    <span class="text-danger" asp-validation-for="productoResponse.Descripcion"></span>
+                </div>
+                <div class="form-group">
+                    <label class="control-label" asp-for="productoResponse.Precio"></label>
+                    <input class="form-control" asp-for="productoResponse.Precio" />
+                    <span class="text-danger" asp-validation-for="productoResponse.Precio"></span>
+                </div>
+                <div class="form-group">
+                    <label class="control-label" asp-for="productoResponse.Stock"></label>
+                    <input class="form-control" asp-for="productoResponse.Stock" />
+                    <span class="text-danger" asp-validation-for="productoResponse.Stock"></span>
+                </div>
+                <div class="form-group">
+                    <label class="control-label" asp-for="productoResponse.CodigoBarras"></label>
+                    <input class="form-control" asp-for="productoResponse.CodigoBarras" />
+                    <span class="text-danger" asp-validation-for="productoResponse.CodigoBarras"></span>
+                </div>
+                <div class="text-danger" asp-validation-summary="All"></div>
+                <div class="form-group">
+                    <a class="btn btn-primary" asp-page="./Index">Regresar</a>
+                    <input type="submit" value="Confirmar" class="btn btn-warning" />
+                </div>
+                <input type="hidden" asp-for="productoResponse.Id" />
+                <input type="hidden" asp-for="subCategoriaSeleccionado" />
+                <input type="hidden" asp-for="categoriaSeleccionada" />
+            </form>
+        </div>
+    </div>
+</section>
+
+                
+
+@section Scripts {
+    <script>
+        async function fetchCategorias() {
+            const categoriaId = document.getElementById('categorias').value;
+            if (!categoriaId) {
+                return;
+            }
+            try {
+                const response = await fetch(`?handler=ObtenerSubCategorias&categoriaId=${categoriaId}`);
+                if (!response.ok) {
+                    throw new Error('Error obteniendo los datos');
+                }
+                const subCategorias = await response.json();
+                const subCategoriasSelect = document.getElementById('subCategorias');
+                subCategoriasSelect.innerHTML = '<option value="">Seleccione una Subcategoria</option>';
+                subCategorias.forEach(subCategoria => {
+                    const option = document.createElement('option');
+                    option.value = subCategoria.id;
+                    option.text = subCategoria.nombre;
+                    subCategoriasSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error obteniendo los datos:', error);
+            }
+        }
+
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
