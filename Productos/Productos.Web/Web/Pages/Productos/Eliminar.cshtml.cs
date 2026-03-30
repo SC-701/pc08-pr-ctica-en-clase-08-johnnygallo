@@ -4,9 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Net;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
+using Reglas;
 
 namespace Web.Pages.Productos
 {
+    [Authorize(Roles ="2")]
     public class EliminarModel : PageModel
     {
         private IConfiguracion _configuracion;
@@ -21,7 +24,7 @@ namespace Web.Pages.Productos
             if (id == null)
                 return NotFound();
             string endpoint = _configuracion.ObtenerMetodo("ApiEndPoints", "ObtenerProducto");
-            var cliente = new HttpClient();
+            using var cliente = ObtenerClienteConToken();
 
             var solicitud = new HttpRequestMessage(HttpMethod.Get, string.Format(endpoint, id));
             var respuesta = await cliente.SendAsync(solicitud);
@@ -35,20 +38,34 @@ namespace Web.Pages.Productos
             return Page();
         }
         public async Task<ActionResult> OnPost(Guid? id)
-        {
+        { 
             if (id == Guid.Empty)
                 return NotFound();
 
             if (!ModelState.IsValid)
                 return Page();
 
+            using var cliente = ObtenerClienteConToken();
+
             string endpoint = _configuracion.ObtenerMetodo("ApiEndPoints", "EliminarProducto");
-            var cliente = new HttpClient();
 
             var solicitud = new HttpRequestMessage(HttpMethod.Delete, string.Format(endpoint, id));
             var respuesta = await cliente.SendAsync(solicitud);
             respuesta.EnsureSuccessStatusCode();
             return RedirectToPage("./Index");
+        }
+
+
+        private HttpClient ObtenerClienteConToken()
+        {
+            var tokenClaim = HttpContext.User.Claims
+                .FirstOrDefault(c => c.Type == "Token");
+            var cliente = new HttpClient();
+            if (tokenClaim != null)
+                cliente.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue(
+                        "Bearer", tokenClaim.Value);
+            return cliente;
         }
     }
 }

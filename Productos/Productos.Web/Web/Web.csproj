@@ -15,4 +15,11 @@
     <Folder Include="wwwroot\assets\img\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Autorizacion.Abstracciones.jgallo50367" Version="1.0.1" />
+    <PackageReference Include="Autorizacion.DA.jgallo50367" Version="1.0.1" />
+    <PackageReference Include="Autorizacion.Flujo.jgallo50367" Version="1.0.1" />
+    <PackageReference Include="Autorizacion.Middleware.jgallo50367" Version="1.0.1" />
+  </ItemGroup>
+
 </Project>
